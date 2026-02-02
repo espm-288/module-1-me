@@ -1,4 +1,4 @@
-# 🏴‍☠️ ESPM 288 - Module 1: Wranglin' Tabular Data Bigger Than Yer Ship's Hold! ⚓
+# 🏴‍☠️ ESPM 288 - Module 1: Wranglin' Tabular Data Bigger Than Yer Ship's Hold! ⚓🦜
 
 ## 🗺️ Ahoy, Matey! What Be This Treasure Map About?
 
