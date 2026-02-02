@@ -22,8 +22,11 @@ We will be working with [EXIOBASE 3.8.1](https://source.coop/youssef-harby/exiob
 ## Setup
 
 ```{r}
+
+
 library(duckdbfs)
 library(dplyr)
+
 
 ```
 
