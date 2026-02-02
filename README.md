@@ -4,6 +4,9 @@
 
 Avast ye! This here module be teachin' ye the fine art o' handlin' datasets so massive they'd sink yer RAM faster than a cannonball through a dinghy! 💥 Usin' the finest tools in all the seven seas like `duckdbfs` and DuckDB, ye'll learn to query and plunder large-scale tabular data without loadin' the whole treasure chest into memory, savvy? 🦜
 
+
+
+
 ## 🎯 What Ye'll Be Learnin' on This Voyage
 
 - ⛵ Connect to remote cloud-based treasure troves (AWS S3) without downloadin' 'em to yer ship!
