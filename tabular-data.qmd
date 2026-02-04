@@ -63,6 +63,26 @@ exio |>
     collect()
 ```
 
+## Exercise 3: CO2 Production Data
+
+Let's read in CO2 production data from the F_satellite matrix, which contains raw environmental stressors in physical units.
+
+```{r}
+# Read CO2 emissions data for 2022
+co2_data <- exio |>
+  filter(matrix == "F_satellite", 
+         str_detect(stressor, "CO2")) |>
+  collect()
+
+# View the structure
+glimpse(co2_data)
+
+# Check unique CO2 stressors
+co2_data |>
+  distinct(stressor, unit) |>
+  arrange(stressor)
+```
+
 > **Task**: Construct a query to find the top 5 sectors in the US by CO2 emissions in 2022. Remember to check the column names in `exio` to find the appropriate emissions flow.
 
 The first thing I need to do is look at what unique stressors are in the f impacts matrix. This is important to me because I want to know if there are multiple stressors measured for CO2. For example, combustion, vs cement manufacturing. 
