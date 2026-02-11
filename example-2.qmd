@@ -28,6 +28,10 @@ exio <- open_dataset(s3_url)
 ```
 
 
+
+
+
+
 ```{r}
 co2 <- exio |>
     filter(matrix == "F_satellite") |>
