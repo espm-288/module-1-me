@@ -5,6 +5,7 @@ author: "ESPM 288"
 format: 
   html:
     embed-resources: true
+    code-fold: true
 ---
 
 ## Introduction
@@ -24,6 +25,7 @@ We will be working with [EXIOBASE 3.8.1](https://source.coop/youssef-harby/exiob
 ## Setup
 
 ```{r}
+#| output: false
 
 library(duckdbfs)
 library(dplyr)
@@ -35,6 +37,7 @@ library(dplyr)
 We can open the entire dataset without downloading it using `open_dataset()`. The data is hosted on Source Cooperative. The `**` pattern allows recursive scanning of the partitioned parquet files.
 
 ```{r}
+#| output: false
 # Remote S3 path to EXIOBASE 3 (Source Cooperative)
 duckdbfs::duckdb_secrets(
     key = "",
@@ -47,7 +50,9 @@ s3_url <- "s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/
 
 # Open the dataset lazily
 exio <- open_dataset(s3_url)
+```
 
+```{r}
 # View the schema (column names and types) without reading data
 glimpse(exio)
 ```
@@ -59,20 +64,26 @@ glimpse(exio)
 Let's read in CO2 production data from the F_satellite matrix, which contains raw environmental stressors in physical units.
 
 ```{r}
+#| output: false
 library(stringr)
 
 # Read CO2 emissions data for all years
 co2_data <- exio |>
     filter(matrix == "F_satellite", str_detect(stressor, "CO2")) |>
     collect()
+```
 
+```{r}
 # View the structure
-co2_data
+co2_data |> head(10) |> knitr::kable()
+```
 
+```{r}
 # Check unique CO2 stressors
 co2_data |>
     distinct(stressor, unit) |>
-    arrange(stressor)
+    arrange(stressor) |>
+    knitr::kable()
 ```
 
 The dataset contains **973,538 rows** with 6 different types of CO2 emissions:
@@ -91,6 +102,7 @@ All values are measured in **kilograms (kg)**.
 Let's identify the top 5 CO2 emitting countries and visualize their emissions over time.
 
 ```{r}
+#| output: false
 library(ggplot2)
 library(scales)
 
@@ -102,14 +114,15 @@ top5_countries <- co2_data |>
     slice_head(n = 5) |>
     pull(region)
 
-
 # Aggregate CO2 by year and country for top 5 emitters
 co2_timeseries <- co2_data |>
     filter(region %in% top5_countries) |>
     group_by(year, region) |>
     summarise(total_co2_kg = sum(value, na.rm = TRUE), .groups = "drop") |>
     mutate(total_co2_mt = total_co2_kg / 1e9) # Convert kg to million tonnes
+```
 
+```{r}
 # Create line plot
 ggplot(co2_timeseries, aes(x = year, y = total_co2_mt, color = region)) +
     geom_line(linewidth = 1.2) +

@@ -3112,45 +3112,39 @@ vertical-align: -.125em;
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(duckdbfs)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: &#39;dplyr&#39;</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from &#39;package:stats&#39;:
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
+</details>
 </div>
 </section>
 <section id="exercise-1-connecting-to-remote-data" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-1-connecting-to-remote-data">Exercise 1: connecting to remote data</h2>
 <p>We can open the entire dataset without downloading it using <code>open_dataset()</code>. The data is hosted on Source Cooperative. The <code>**</code> pattern allows recursive scanning of the partitioned parquet files.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remote S3 path to EXIOBASE 3 (Source Cooperative)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>duckdbfs<span class="sc">::</span><span class="fu">duckdb_secrets</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">key =</span> <span class="st">&quot;&quot;</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">secret =</span> <span class="st">&quot;&quot;</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoint =</span> <span class="st">&quot;s3.amazonaws.com&quot;</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">region =</span> <span class="st">&quot;us-west-2&quot;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1</code></pre>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remote S3 path to EXIOBASE 3 (Source Cooperative)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>duckdbfs<span class="sc">::</span><span class="fu">duckdb_secrets</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">key =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">secret =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoint =</span> <span class="st">&quot;s3.amazonaws.com&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">region =</span> <span class="st">&quot;us-west-2&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>s3_url <span class="ot">&lt;-</span> <span class="st">&quot;s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the dataset lazily</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>exio <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(s3_url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s3_url <span class="ot">&lt;-</span> <span class="st">&quot;s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**&quot;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the dataset lazily</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>exio <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(s3_url)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># View the schema (column names and types) without reading data</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(exio)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View the schema (column names and types) without reading data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(exio)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: ??
 Columns: 8
@@ -3170,45 +3164,195 @@ $ matrix   [3m[90m&lt;chr&gt;[39m[23m &quot;F_impacts&quot;[90m, [39m&quot
 <h2 class="anchored" data-anchor-id="exercise-3-co2-production-data">Exercise 3: CO2 Production Data</h2>
 <p>Let’s read in CO2 production data from the F_satellite matrix, which contains raw environmental stressors in physical units.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Read CO2 emissions data for all years</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>co2_data <span class="ot">&lt;-</span> exio <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(matrix <span class="sc">==</span> <span class="st">&quot;F_satellite&quot;</span>, <span class="fu">str_detect</span>(stressor, <span class="st">&quot;CO2&quot;</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>()</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># View the structure</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>co2_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[90m# A tibble: 973,538 × 8[39m
-   stressor               region sector          value unit   year format matrix
-   [3m[90m&lt;chr&gt;[39m[23m                  [3m[90m&lt;chr&gt;[39m[23m  [3m[90m&lt;chr&gt;[39m[23m           [3m[90m&lt;dbl&gt;[39m[23m [3m[90m&lt;chr&gt;[39m[23m [3m[90m&lt;dbl&gt;[39m[23m [3m[90m&lt;chr&gt;[39m[23m  [3m[90m&lt;chr&gt;[39m[23m 
-[90m 1[39m CO2 - combustion - air AT     Cultivation o… 2.27[90me[39m8 kg     [4m1[24m995 ixi    F_sat…
-[90m 2[39m CO2 - combustion - air AT     Cultivation o… 2.16[90me[39m8 kg     [4m1[24m995 ixi    F_sat…
-[90m 3[39m CO2 - combustion - air AT     Cultivation o… 1.01[90me[39m8 kg     [4m1[24m995 ixi    F_sat…
-[90m 4[39m CO2 - combustion - air AT     Cultivation o… 4.98[90me[39m7 kg     [4m1[24m995 ixi    F_sat…
-[90m 5[39m CO2 - combustion - air AT     Cultivation o… 1.10[90me[39m7 kg     [4m1[24m995 ixi    F_sat…
-[90m 6[39m CO2 - combustion - air AT     Cultivation o… 1.13[90me[39m4 kg     [4m1[24m995 ixi    F_sat…
-[90m 7[39m CO2 - combustion - air AT     Cultivation o… 1.74[90me[39m6 kg     [4m1[24m995 ixi    F_sat…
-[90m 8[39m CO2 - combustion - air AT     Cattle farming 6.79[90me[39m7 kg     [4m1[24m995 ixi    F_sat…
-[90m 9[39m CO2 - combustion - air AT     Pigs farming   4.87[90me[39m7 kg     [4m1[24m995 ixi    F_sat…
-[90m10[39m CO2 - combustion - air AT     Poultry farmi… 4.62[90me[39m7 kg     [4m1[24m995 ixi    F_sat…
-[90m# ℹ 973,528 more rows[39m</code></pre>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Read CO2 emissions data for all years</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>co2_data <span class="ot">&lt;-</span> exio <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(matrix <span class="sc">==</span> <span class="st">&quot;F_satellite&quot;</span>, <span class="fu">str_detect</span>(stressor, <span class="st">&quot;CO2&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check unique CO2 stressors</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>co2_data <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(stressor, unit) <span class="sc">|&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(stressor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[90m# A tibble: 6 × 2[39m
-  stressor                                       unit 
-  [3m[90m&lt;chr&gt;[39m[23m                                          [3m[90m&lt;chr&gt;[39m[23m
-[90m1[39m CO2 - agriculture - peat decay - air           kg   
-[90m2[39m CO2 - combustion - air                         kg   
-[90m3[39m CO2 - non combustion - Cement production - air kg   
-[90m4[39m CO2 - non combustion - Lime production - air   kg   
-[90m5[39m CO2 - waste - biogenic - air                   kg   
-[90m6[39m CO2 - waste - fossil - air                     kg   </code></pre>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View the structure</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>co2_data <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 6%">
+<col style="width: 35%">
+<col style="width: 11%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">stressor</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">sector</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: left;">unit</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: left;">format</th>
+<th style="text-align: left;">matrix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of wheat</td>
+<td style="text-align: right;">226849380.88</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of cereal grains nec</td>
+<td style="text-align: right;">216344726.94</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of vegetables, fruit, nuts</td>
+<td style="text-align: right;">101282174.32</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of oil seeds</td>
+<td style="text-align: right;">49849518.52</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of sugar cane, sugar beet</td>
+<td style="text-align: right;">10989674.73</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of plant-based fibers</td>
+<td style="text-align: right;">11268.51</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cultivation of crops nec</td>
+<td style="text-align: right;">1738733.64</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Cattle farming</td>
+<td style="text-align: right;">67919674.60</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Pigs farming</td>
+<td style="text-align: right;">48741831.97</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">AT</td>
+<td style="text-align: left;">Poultry farming</td>
+<td style="text-align: right;">46173605.36</td>
+<td style="text-align: left;">kg</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: left;">ixi</td>
+<td style="text-align: left;">F_satellite</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check unique CO2 stressors</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>co2_data <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(stressor, unit) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(stressor) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">stressor</th>
+<th style="text-align: left;">unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CO2 - agriculture - peat decay - air</td>
+<td style="text-align: left;">kg</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - combustion - air</td>
+<td style="text-align: left;">kg</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO2 - non combustion - Cement production - air</td>
+<td style="text-align: left;">kg</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - non combustion - Lime production - air</td>
+<td style="text-align: left;">kg</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO2 - waste - biogenic - air</td>
+<td style="text-align: left;">kg</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO2 - waste - fossil - air</td>
+<td style="text-align: left;">kg</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>The dataset contains <strong>973,538 rows</strong> with 6 different types of CO2 emissions:</p>
@@ -3226,42 +3370,48 @@ $ matrix   [3m[90m&lt;chr&gt;[39m[23m &quot;F_impacts&quot;[90m, [39m&quot
 <h2 class="anchored" data-anchor-id="exercise-4-time-series-of-top-co2-emitters">Exercise 4: Time Series of Top CO2 Emitters</h2>
 <p>Let’s identify the top 5 CO2 emitting countries and visualize their emissions over time.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># First, identify the top 5 emitting countries (total across all years)</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>top5_countries <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">total_co2 =</span> <span class="fu">sum</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(total_co2)) <span class="sc">|&gt;</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(region)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate CO2 by year and country for top 5 emitters</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>co2_timeseries <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(region <span class="sc">%in%</span> top5_countries) <span class="sc">|&gt;</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(year, region) <span class="sc">|&gt;</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">total_co2_kg =</span> <span class="fu">sum</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">total_co2_mt =</span> total_co2_kg <span class="sc">/</span> <span class="fl">1e9</span>) <span class="co"># Convert kg to million tonnes</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create line plot</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(co2_timeseries, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> total_co2_mt, <span class="at">color =</span> region)) <span class="sc">+</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;CO2 Emissions Over Time: Top 5 Countries (1995-2022)&quot;</span>,</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Total CO2 Emissions (Million Tonnes)&quot;</span>,</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">&quot;Country&quot;</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;right&quot;</span>,</span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># First, identify the top 5 emitting countries (total across all years)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>top5_countries <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">total_co2 =</span> <span class="fu">sum</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(total_co2)) <span class="sc">|&gt;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(region)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate CO2 by year and country for top 5 emitters</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>co2_timeseries <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(region <span class="sc">%in%</span> top5_countries) <span class="sc">|&gt;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(year, region) <span class="sc">|&gt;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">total_co2_kg =</span> <span class="fu">sum</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">total_co2_mt =</span> total_co2_kg <span class="sc">/</span> <span class="fl">1e9</span>) <span class="co"># Convert kg to million tonnes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create line plot</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(co2_timeseries, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> total_co2_mt, <span class="at">color =</span> region)) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;CO2 Emissions Over Time: Top 5 Countries (1995-2022)&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Total CO2 Emissions (Million Tonnes)&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">&quot;Country&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
