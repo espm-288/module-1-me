@@ -1,8 +1,11 @@
-# 🏴‍☠️ ESPM 288 - Module 1: Wranglin' Tabular Data Bigger Than Yer Ship's Hold! ⚓
+# 🏴‍☠️ ESPM 288 - Module 1: Wranglin' Tabular Data Bigger Than Yer Ship's Hold! ⚓🦜
 
 ## 🗺️ Ahoy, Matey! What Be This Treasure Map About?
 
 Avast ye! This here module be teachin' ye the fine art o' handlin' datasets so massive they'd sink yer RAM faster than a cannonball through a dinghy! 💥 Usin' the finest tools in all the seven seas like `duckdbfs` and DuckDB, ye'll learn to query and plunder large-scale tabular data without loadin' the whole treasure chest into memory, savvy? 🦜
+
+
+
 
 ## 🎯 What Ye'll Be Learnin' on This Voyage
 
