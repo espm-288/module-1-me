@@ -100,8 +100,6 @@ top5_countries <- co2_data |>
     slice_head(n = 5) |>
     pull(region)
 
-# Show the top 5
-print(top5_countries)
 
 # Aggregate CO2 by year and country for top 5 emitters
 co2_timeseries <- co2_data |>

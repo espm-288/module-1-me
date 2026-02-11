@@ -1,0 +1,96 @@
+---
+title: "Module 1: Tabular Data"
+subtitle: "Working with larger-than-RAM data using duckdbfs"
+author: "Carl Boettiger"
+format: pdf
+---
+
+Explaining our analysis and so forth.  
+
+```{r}
+library(duckdbfs)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+# Remote S3 path to EXIOBASE 3 (Source Cooperative)
+duckdbfs::duckdb_secrets(
+    key = "",
+    secret = "",
+    endpoint = "s3.amazonaws.com",
+    region = "us-west-2"
+)
+
+s3_url <- "s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**"
+# Open the dataset lazily
+exio <- open_dataset(s3_url)
+```
+
+
+```{r}
+co2 <- exio |>
+    filter(matrix == "F_satellite") |>
+    filter(grepl("CO2|carbon dioxide", stressor, ignore.case = TRUE))
+
+co2
+```
+
+Identify which regions are the top 5 CO2 emmiters
+
+```{r}
+top_co2_regions <- co2 |>
+    group_by(region) |>
+    summarize(total_co2 = sum(value, na.rm = TRUE)) |>
+    arrange(desc(total_co2)) |>
+    head(5) |>
+    collect()
+
+top_co2_regions
+```
+
+Filter the co2 data down to just these top countries, and plot their total emissions by year.
+
+```{r}
+top_sectors <- co2 |>
+    group_by(sector) |>
+    summarize(total_co2 = sum(value, na.rm = TRUE), .groups = "drop") |>
+    arrange(desc(total_co2)) |>
+    head(5)
+
+
+all_sectors_by_year <- co2 |>
+    inner_join(top_sectors) |>
+    group_by(sector, year) |>
+    summarize(total_co2 = sum(value, na.rm = TRUE)) |>
+    collect()
+```
+
+```{r}
+
+p <- all_sectors_by_year |>
+    ggplot(aes(x = year, y = total_co2, color = sector)) +
+    geom_line()
+
+ggsave("co2_plot.png", plot = p)
+p
+```  
+
+
+
+```{r}
+p <- all_sectors_by_year |>
+    ggplot(aes(x = year, y = total_co2, color = sector)) +
+    geom_line(size = 1.2) +
+    geom_point() +
+    labs(
+        title = "CO2 Emissions Over Time for Top 5 Emitting Sectors",
+        x = "Year",
+        y = "Total CO2 Emissions",
+        color = "Sector"
+    ) +
+    theme_minimal()
+
+ggsave("co2_emissions_plot.png", plot = p, width = 10, height = 6, dpi = 300)
+p
+```  
