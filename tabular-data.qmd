@@ -23,10 +23,8 @@ We will be working with [EXIOBASE 3.8.1](https://source.coop/youssef-harby/exiob
 
 ```{r}
 
-
 library(duckdbfs)
 library(dplyr)
-
 
 ```
 
@@ -36,13 +34,13 @@ We can open the entire dataset without downloading it using `open_dataset()`. Th
 
 ```{r}
 # Remote S3 path to EXIOBASE 3 (Source Cooperative)
-
 duckdbfs::duckdb_secrets(
     key = "",
     secret = "",
     endpoint = "s3.amazonaws.com",
     region = "us-west-2"
 )
+
 s3_url <- "s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**"
 
 # Open the dataset lazily
@@ -52,103 +50,82 @@ exio <- open_dataset(s3_url)
 glimpse(exio)
 ```
 
-## Exercise 2: Efficient Filtering
 
-The dataset is large. We should filter *before* collecting any data into R.
-
-```{r}
-exio |>
-    filter(year == 2022, region == "US") |>
-    head() |> # view the first 6 rows
-    collect()
-```
 
 ## Exercise 3: CO2 Production Data
 
 Let's read in CO2 production data from the F_satellite matrix, which contains raw environmental stressors in physical units.
 
 ```{r}
-# Read CO2 emissions data for 2022
+library(stringr)
+
+# Read CO2 emissions data for all years
 co2_data <- exio |>
-  filter(matrix == "F_satellite", 
-         str_detect(stressor, "CO2")) |>
-  collect()
+    filter(matrix == "F_satellite", str_detect(stressor, "CO2")) |>
+    collect()
 
 # View the structure
-glimpse(co2_data)
+co2_data
 
 # Check unique CO2 stressors
 co2_data |>
-  distinct(stressor, unit) |>
-  arrange(stressor)
+    distinct(stressor, unit) |>
+    arrange(stressor)
 ```
 
-> **Task**: Construct a query to find the top 5 sectors in the US by CO2 emissions in 2022. Remember to check the column names in `exio` to find the appropriate emissions flow.
+The dataset contains **973,538 rows** with 6 different types of CO2 emissions:
 
-The first thing I need to do is look at what unique stressors are in the f impacts matrix. This is important to me because I want to know if there are multiple stressors measured for CO2. For example, combustion, vs cement manufacturing. 
+1. **CO2 - agriculture - peat decay - air** (from peatland degradation)
+2. **CO2 - combustion - air** (from burning fossil fuels)
+3. **CO2 - non combustion - Cement production - air** (from chemical process)
+4. **CO2 - non combustion - Lime production - air** (from chemical process)
+5. **CO2 - waste - biogenic - air** (from organic waste decomposition)
+6. **CO2 - waste - fossil - air** (from fossil-based waste)
 
-```{r}
-distinct_units <- exio %>%
-  filter(matrix == "F_impacts") %>%
-  distinct(stressor) %>%
-  collect()
-print(distinct_units, n = 50) 
-```
+All values are measured in **kilograms (kg)**.
 
-Now I know that there are in fact multiple ways this matrix measures CO2. Before I get into that, I want to know what the total emissions are for the listed parameters. This includes methane and others. 
+## Exercise 4: Time Series of Top CO2 Emitters
 
-```{r}
-exio |>
-  filter(matrix == "F_impacts", year == 2022, region == "US") |>
-  group_by(sector) |>
-  summarise(total_emissions = sum(value, na.rm = TRUE)) |>
-  arrange(desc(total_emissions)) |>
-   collect() |>
-  print(n=5)
-```
+Let's identify the top 5 CO2 emitting countries and visualize their emissions over time.
 
-Methane was not a lucky guess. I already knew since I ran the code. Maybe I should stop eating beef! 
-
-```{r}
-for_pretty  %>%
-  distinct(unit) %>%
-  print(n = 50)
- 
-```
-
-I am a little worried that even though we are working with a matrix that the different CO2 stressors are going to be measured in a different unit so lets check that out. 
-```{r}
-for_pretty <-exio |>
-  filter(matrix == "F_impacts", year == 2022, region == "US", str_detect(stressor, "CO2")) |>
-  group_by(sector) |>
-  summarise(total_emissions = sum(value, na.rm = TRUE)) |>
-  arrange(desc(total_emissions))|>
-   collect() |>
- slice_head(n=5)
-```
-
-Looks Good enough to me! There are two unites. One Gg CO2 and another unit that I am assuming is the equivilant. I won't know though without more background. Now we know based on the code block above that Production of electricity by coal  was the top CO2 producer in the US in 2022. A little backgound shows that Gg is gigagrams. A unit used for measuing very large amounts of CO2. 
-
-# Visualize 
-Here I am going to start visulizing the data 
 ```{r}
 library(ggplot2)
 library(scales)
 
-GG_pretty <- for_pretty |>
-  ggplot(aes(x = reorder(sector, total_emissions), y = total_emissions, fill = sector)) +
-  geom_col(show.legend = FALSE) +
-  scale_y_continuous(labels = comma) +
-  labs(
-    title = "Top 5 US Sectors by CO2 Emissions (2022)",
-    x = "Sector",
-    y = "Total CO2 Emissions (Gg)"
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    axis.text.x = element_text(angle = 0, vjust = 0.5),
-    axis.text.y = element_text(face = "bold"),
-    panel.grid.major.y = element_blank()
-  )
-GG_pretty
+# First, identify the top 5 emitting countries (total across all years)
+top5_countries <- co2_data |>
+    group_by(region) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+    arrange(desc(total_co2)) |>
+    slice_head(n = 5) |>
+    pull(region)
+
+# Show the top 5
+print(top5_countries)
+
+# Aggregate CO2 by year and country for top 5 emitters
+co2_timeseries <- co2_data |>
+    filter(region %in% top5_countries) |>
+    group_by(year, region) |>
+    summarise(total_co2_kg = sum(value, na.rm = TRUE), .groups = "drop") |>
+    mutate(total_co2_mt = total_co2_kg / 1e9) # Convert kg to million tonnes
+
+# Create line plot
+ggplot(co2_timeseries, aes(x = year, y = total_co2_mt, color = region)) +
+    geom_line(linewidth = 1.2) +
+    geom_point(size = 2) +
+    scale_y_continuous(labels = comma) +
+    labs(
+        title = "CO2 Emissions Over Time: Top 5 Countries (1995-2022)",
+        x = "Year",
+        y = "Total CO2 Emissions (Million Tonnes)",
+        color = "Country"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+        plot.title = element_text(face = "bold", hjust = 0.5),
+        legend.position = "right",
+        panel.grid.minor = element_blank()
+    )
 ```
+
